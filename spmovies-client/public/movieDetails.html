@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>SPMovies: Movie Details</title>
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+        <!-- CSS here -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/slicknav.css">
+        <link rel="stylesheet" href="assets/css/flaticon.css">
+        <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="assets/css/themify-icons.css">
+        <link rel="stylesheet" href="assets/css/nice-select.css">
+        <link rel="stylesheet" href="assets/css/home.css">
+        <link rel="stylesheet" href="assets/css/movieDetails.css"
+    </head>
+
+    <body>
+        <header>
+            <!-- Header Start -->
+           <div class="header-area header-transparent">
+                <div class="main-header">
+                   <div class="header-bottom  header-sticky">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <!-- Logo -->
+                                <div class="col-xl-2 col-lg-2 col-md-1">
+                                    <div class="logo">
+                                      <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-8">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu f-right d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">               
+                                                <li id="adminDashboard"></li>                                                                                                                      
+                                                <li><a href="Home.html">Home</a></li>
+                                                <li><a href="#">Genres</a>
+                                                    <ul class="submenu" id="genres">
+                                                    </ul>
+                                                </li>
+                                                <li><a href="#">Movies</a>
+                                                    <ul class="submenu" id="movies">
+                                                    </ul>
+                                                </li>
+                                                <li class="login" id="loginlogout">
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+           </div>
+            <!-- Header End -->
+        </header>
+
+        <section style="z-index: 9;margin-top: 150px;">
+            <div class="container">
+                <div class="pb-3">
+                    <a href="searchResults.html" class="pb-5"> < Back to search page</a>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3" id="moviePoster">
+                
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="pl-5" id="movieDetails">
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2>Timeslots</h2>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="card mb-3 bg-dark">
+                            <div class="card-body" id="timeslots">
+    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h2>Member's Reviews</h2>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="col-lg-12" id="addReview">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12" id="reviews">
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JS here -->
+        <script src="assets/js/modernizr-3.5.0.min.js"></script>
+        <!-- Jquery, Popper, Bootstrap -->
+        <script src="assets/js/jquery-3.2.1.min.js"></script>
+        <script src="assets/js/popper.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+
+        <script src="assets/js/jquery.slicknav.min.js"></script>
+        <script src="assets/js/ajax/ajax.js"></script>
+        <script>headerAjaxCall()</script>    
+        <script src="assets/js/mobile.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                console.log("Ready triggered");
+
+                // display add review button to registered members
+                var token = localStorage.getItem('token');
+                if (token !== null) {
+                    var appendAddReviewButtonHTML =  `<button class="btn float-right" id="addReviewButton">+ Add Review</button>`;
+                    $("#addReview").append(appendAddReviewButtonHTML);
+                }else {
+                    var appendAddReviewButtonHTML =  `<button class="btn float-right"  onclick="window.location.href='/login'">+ Login to leave a review</button>`;
+                    $("#addReview").append(appendAddReviewButtonHTML);
+                }
+                // if add review button is clicked redirect to add review page
+                $("#addReviewButton").click(function () {
+                    console.log("Add review button was clicked");
+                    window.location.assign("http://localhost:3001/addReview.html");
+                    return false;
+                }); // add review handler
+
+
+                // display movie details
+                var movieID = localStorage.getItem('movieID');
+                $.ajax({
+                    url: `http://localhost:3000/movie/${movieID}/`,
+                    type: 'GET',
+                    dataType: "json",
+                    success: function(data, textStatus,xhr) {
+                        var appendMoviePosterHTML = `<img src="http://localhost:3000/moviePoster/${data[0].poster_filename}" alt="movie poster" style="z-index: 1;">`;
+                        $("#moviePoster").append(appendMoviePosterHTML);
+                        var appendMovieDetailsHTML = `<h1 class="text-light">${data[0].title}</h3>
+                                                      <p class="text-light">${data[0].description}</p>
+                                                      <hr>
+                                                      <ul class="text-light">
+                                                        <li>Cast: ${data[0].cast}</li>
+                                                        <li>Release Date: ${data[0].opening_date}</li>
+                                                        <li>Duration: ${data[0].time}</li>
+                                                        <li>Genre(s): ${data[0].genres}</li>
+                                                        <li id="rating">Rating: </li>
+                                                      </ul><hr>`;
+                        $("#movieDetails").append(appendMovieDetailsHTML);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log('Error in Operation');
+                        alert(xhr.responseJSON.Message);
+                    } // end of error function
+                }); // end of ajax
+
+                
+                // display reviews for the movie selected
+                $.ajax({
+                    url:`http://localhost:3000/movie/${movieID}/reviews`,
+                    type: 'GET',
+                    dataType: "json",
+                    success: function(data, textStatus,xhr) {
+                        console.log("Get review success");
+                        var allRatings = 0;
+                        var numOfReviews = data.length;
+
+                        data.forEach((data) => {
+                            var output = [];
+                            var increment = 0;
+                            var maxRating = 5;
+                            allRatings += data.rating;
+                            var userRating = data.rating;
+                            while (increment < userRating) {
+                                output.push('<span class="fa fa-star checked"></span>')
+                                increment ++;
+                            }
+
+                            while (maxRating > userRating) {
+                                output.push('<span class="fa fa-star notChecked"></span>')
+                                maxRating --;
+                            }
+                            output.join('');
+                            var stringOutput = output.join('');
+                            var appendMovieReviewsHTML = `<div class="card mb-3 bg-dark">
+                                                            <div class="card-body">
+                                                                <h3 class="card-title text-light">${data.username}</h3>
+                                                                <p class="card-text text-light">${data.review}</p>
+                                                                <li id="userRating" class="text-light">Rating: ${stringOutput}</li>
+                                                                <p class="card-text"><small class="text-muted">created at: ${data.created_at}</small></p>
+                                                            </div>
+                                                        </div>`
+                            $("#reviews").append(appendMovieReviewsHTML);
+                        }); // end of forEach
+                        movieRating(allRatings,numOfReviews);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (xhr.responseText == "") {
+                            var appendMovieReviewsHTML = `<div class="card mb-3 bg-dark">
+                                                            <div class="card-body">
+                                                                <p class="card-text text-warning">No reviews yet</h3>
+                                                            </div>
+                                                        </div>`
+                            $("#reviews").append(appendMovieReviewsHTML);
+                        } else {
+                            console.log('Error in Operation');
+                            alert(xhr.responseJSON.Message);
+                        }
+                        
+                    } // end of error function
+                }); // end of ajax
+
+                // display timeslots based on movie id
+                var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                var day = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                $.ajax({
+                    url: `http://localhost:3000/timeslot/${movieID}`,
+                    type: 'GET',
+                    success: function(data, textStatus, xhr) {
+                        if(data.length == undefined) {
+                            var appendTimeslotHTML = `<li class="text-warning">No timeslots yet</li>`;
+                            $("#timeslots").append(appendTimeslotHTML);
+                        } else {
+                            data.forEach((data) => {
+                                // timeslot formatting
+                                var timeslot = new Date(data.timeslot);
+                                var screening_date = `${day[timeslot.getDay()]}, ${timeslot.getDate()} ${month[timeslot.getMonth()]} ${timeslot.getFullYear()}`;
+
+                                if (timeslot.getHours() <= 11) {
+                                    var ampm = "am";
+                                }else {
+                                    var ampm = "pm";
+                                }
+
+                                var hour = timeslot.getHours()%12;
+                                if (hour == 0) {
+                                    var hour = 12;
+                                };
+
+                                var minutes = timeslot.getMinutes();
+                                if (minutes == 0) {
+                                    var minutes = "00";
+                                };
+
+                                var screening_time = `${hour}:${minutes} ${ampm}`;
+                                var formattedTimeslot = `${screening_date}, ${screening_time}`;
+
+                                var appendTimeslotHTML = `<li class="text-light">${formattedTimeslot}</li>`;
+                                $("#timeslots").append(appendTimeslotHTML);
+                            }); // end of foreach
+                            console.log("Timeslot appended");
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error in Operation');  
+                        var appendTimeslotHTML = `<li class="text-warning">No timeslots yet</li>`;
+                        $("#timeslots").append(appendTimeslotHTML);
+                        // alert(xhr.responseJSON.Message);
+                    } // end of error
+                }); // end of ajax
+
+                // function to calculate average movie rating and append stars
+                function movieRating(allRatings,numOfReviews) {
+                    var averageRating = Math.floor(allRatings/numOfReviews);
+                    let output = [];
+                    var increment = 0;
+                    var maxRating = 5;
+
+                    while (increment < averageRating) {
+                        var appendGoldStarHTML = `<span class="fa fa-star checked"></span>`;
+                        $("#rating").append(appendGoldStarHTML);
+                        increment ++;
+                    }
+
+                    while (maxRating > averageRating) {
+                        var appendStarHTML = `<span class="fa fa-star notChecked"></span>`
+                        $("#rating").append(appendStarHTML);
+                        maxRating --;
+                    }
+                }; // end of function
+
+            }); // end of document ready
+        </script>
+    </body>
+
+</html>

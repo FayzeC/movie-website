@@ -1,0 +1,379 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SP Movies: Search Results </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/slicknav.css">
+    <link rel="stylesheet" href="assets/css/flaticon.css">
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/themify-icons.css">
+    <link rel="stylesheet" href="assets/css/nice-select.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+</head>
+
+<body>
+    <header>
+        <!-- Header Start -->
+        <div class="header-area header-transparent">
+            <div class="main-header">
+                <div class="header-bottom  header-sticky">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <!-- Logo -->
+                            <div class="col-xl-2 col-lg-2 col-md-1">
+                                <div class="logo">
+                                    <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "
+                                            alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-lg-10 col-md-8">
+                                <!-- Main-menu -->
+                                <div class="main-menu f-right d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">
+                                            <li id="adminDashboard"></li>
+                                            <li><a href="Home.html">Home</a></li>
+                                            <li><a href="#">Genres</a>
+                                                <ul class="submenu" id="genres">
+                                                </ul>
+                                            </li>
+                                            <li><a href="#">Movies</a>
+                                                <ul class="submenu" id="movies">
+                                                </ul>
+                                            </li>
+                                            <li class="login" id="loginlogout">
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Header End -->
+    </header>
+
+    <main>
+        <!-- Hero Start-->
+        <div class="slider-area hero-area3 hero-overly2 d-flex align-items-center ">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-8 col-lg-9">
+                        <div class="hero-cap text-center pt-50 pb-20">
+                            <h2>Our Movies</h2>
+                        </div>
+                        <!--Hero form -->
+                        <form action="#" class="search-box search-box2">
+                            <div class="input-form">
+                                <input type="text" oninput="myFunction()" list="searchResult" name="search" id="search"  placeholder="What are you looking for?" value="">
+                                <datalist id="searchResult">
+                                        
+                                </datalist>
+                            </div>
+                            <div class="select-form">
+                                <div class="select-itms">
+                                    <select name="select" id="select1" onchange="selectSearchType()">
+                                        <option value="Title">Title</option>
+                                        <option value="Genre">Genre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Search box -->
+                            <div class="search-form">
+                                <button id="submitSearch">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Hero End -->
+
+        <!-- listing Area Start -->
+        <div class="listing-area pt-120 pb-120">
+            <div class="container">
+                <div class="row">
+
+                    <!-- Right content -->
+                    <div class="col-xl-12 col-lg-8 col-md-6">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="count mb-35" id="numOfMovieAvailable">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- listing Details Stat-->
+                        <div class="listing-details-area">
+                            <div class="container">
+                                <div class="row" id="availableMovies">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- listing Details End -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- listing-area Area End -->
+    </main>
+
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+    <!-- All JS Custom Plugins Link Here here -->
+    <script src="assets/js/modernizr-3.5.0.min.js"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="assets/js/jquery.slicknav.min.js"></script>
+
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="assets/js/slick.min.js"></script>
+    <!-- One Page, Animated-HeadLin -->
+    <script src="assets/js/wow.min.js"></script>
+
+    <script src="assets/js/jquery.nice-select.min.js"></script>
+    <!-- Jquery Plugins, main Jquery -->	
+    <script src="assets/js/plugins.js"></script>
+    
+    <!-- Calling js file that contains ajax functions -->
+    <script src="assets/js/ajax/ajax.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>headerAjaxCall()</script>
+
+    <script>
+        // searchtype identifies whether users are searching by movie title or genre
+        var searchType;
+        function selectSearchType (){
+            searchType = document.getElementById("select1").value;
+        }
+
+        // validate empty strings
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
+
+        // redirects user to a movie's detail page if it is clicked
+        function detailClick(movieID) {
+            localStorage.setItem('movieID',movieID);
+            window.location.assign("http://localhost:3001/movieDetails.html");
+        }
+
+        $(document).ready(function() {
+            console.log("Ready triggered");
+
+            // display movie details
+            var movieTitle = localStorage.getItem('userSearchInput');
+            var movieGenre = localStorage.getItem('userSearchGenre');
+
+            // validate empty strings
+            if (isBlank(movieTitle) && isBlank(movieGenre)) {
+                var appendNumOfAvailableMovie = `<span>0 movie available. Please search again.</span>`;
+                $("#numOfMovieAvailable").append(appendNumOfAvailableMovie);
+            }else if
+            // show results when user search by movie title or genre
+            (movieTitle) {
+                var data = "{\"userSearch\":\"" + movieTitle + "\"}";
+
+                $.ajax({
+                    url: `http://localhost:3000/searchMovie/${movieTitle}/`,
+                    type: 'GET',
+                    data: data,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (movieInfo, textStatus, xhr) {
+                        var numOfMovieAvailable = movieInfo.length;
+                        if (numOfMovieAvailable == 0) {
+                            var appendNumOfAvailableMovie = `<span>"${movieTitle}" not available</span>`;
+                            localStorage.removeItem('userSearchInput');
+                        } else {
+                            var appendNumOfAvailableMovie = `<span>${numOfMovieAvailable} movie available</span>`;
+                        }
+                        // var appendNumOfAvailableMovie = `<span>${numOfMovieAvailable} movie available</span>`;
+                        $("#numOfMovieAvailable").append(appendNumOfAvailableMovie);
+                        movieInfo.forEach((movieInfo) => {
+                            var movieID = movieInfo.movieid;
+                            $.ajax({
+                                url: `http://localhost:3000/movie/${movieID}/`,
+                                type: 'GET',
+                                data: data,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (data, textStatus, xhr) {
+                                    localStorage.removeItem('userSearchInput');
+                                    localStorage.removeItem('userSearchGenre');
+                                    // var numOfMovieAvailable = data.length
+                                    data.forEach((data) => {
+                                        var appendMovieDetailsHTML = `<div class="col-lg-4 ">
+                                            <div class="single-listing mb-30">
+                                                <div class="list-img">
+                                                    <img src="http://localhost:3000/moviePoster/${data.poster_filename}" alt="movie poster">
+                                                </div>
+                                                <div class="list-caption">
+                                                    <span><button class="btn" onClick="detailClick(${movieID})">Details</button></span>
+                                                    <h3><a href="listing_details.html">${data.title}</a></h3>
+                                                    <p>${data.genres}</p>
+                                                    <div class="list-footer">
+                                                        <ul>
+                                                            <li>Duration: ${data.time}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>`
+                                        $("#availableMovies").append(appendMovieDetailsHTML);
+                                    }); // end of foreach
+                                }, // end of success
+                                error: function (xhr, textStatus, errorThrown) {
+                                    console.log('Error in Operation');
+                                    alert(xhr.responseJSON.Message);
+                                } // end of error function
+                            }); // end of ajax
+                        }); // end of forEach
+                    }, // end of success
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log('Error in Operation');
+                        alert(xhr.responseJSON.Message);
+                    } // end of error function
+                }); // end of ajax
+            } else if (movieGenre) {
+                var data = "{\"userSearch\":\"" + movieGenre + "\"}";
+                $.ajax({
+                    url: `http://localhost:3000/searchMovieByGenre/${movieGenre}/`,
+                    type: 'GET',
+                    data: data,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (movieInfo, textStatus, xhr) {
+                        var numOfMovieAvailable = movieInfo.length;
+                        var appendNumOfAvailableMovie = `<span>${numOfMovieAvailable} movie available in "${movieGenre}" genre</span>`;
+                        $("#numOfMovieAvailable").append(appendNumOfAvailableMovie);
+                        movieInfo.forEach((movieInfo) => {
+                            var movieID = movieInfo.movieid;
+                            $.ajax({
+                                url: `http://localhost:3000/movie/${movieID}/`,
+                                type: 'GET',
+                                data: data,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (data, textStatus, xhr) {
+                                    localStorage.removeItem('userSearchInput');
+                                    localStorage.removeItem('userSearchGenre');
+                                    data.forEach((data) => {
+                                        var appendMovieDetailsHTML = `<div class="col-lg-4 ">
+                                            <div class="single-listing mb-30">
+                                                <div class="list-img">
+                                                    <img src="http://localhost:3000/moviePoster/${data.poster_filename}" alt="">
+                                                </div>
+                                                <div class="list-caption">
+                                                    <span><button class="btn" onClick="detailClick(${movieID})">Details</button></span>
+                                                    <h3>${data.title}</h3>
+                                                    <p>${data.genres}</p>
+                                                    <div class="list-footer">
+                                                        <ul>
+                                                            <li>Duration: ${data.time}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>`
+                                        $("#availableMovies").append(appendMovieDetailsHTML);
+                                    }); // end of foreach
+                                }, // end of success
+                                error: function (xhr, textStatus, errorThrown) {
+                                    console.log('Error in Operation');
+                                    alert(xhr.responseJSON.Message);
+                                } // end of error function
+                            }) // end of ajax
+                        }) // end of foreach
+                    }, // end of success
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log('Error in Operation');
+                        alert(xhr.responseJSON.Message);
+                    } // end of error function
+                }); // end of ajax
+            }; // end of if else
+            
+            // submit search event handler
+            $("#submitSearch").click(function () {
+                console.log("Submit search was clicked");
+                var userSearchInput = $('#search').val();
+                if (searchType == "Genre") {
+                    localStorage.removeItem('userSearchInput');
+                    localStorage.setItem('userSearchGenre',userSearchInput);
+                    window.location.assign("http://localhost:3001/searchResults.html");
+                    return false;
+                } else {
+                    localStorage.removeItem('userSearchGenre');
+                    localStorage.setItem('userSearchInput',userSearchInput);
+                    window.location.assign("http://localhost:3001/searchResults.html");
+                    return false;
+                }
+            }); // end of submit search event handler
+
+            // live searching, appends similar results from user input to datalist
+            $("#search").keyup(function() {
+                var userInput = $("#search").val();
+                if (userInput == "") {
+                    $("#searchResult").html("");
+                } else {
+                    var data = "{\"userSearch\":\"" + userInput + "\"}";
+                    $.ajax({
+                        url: `http://localhost:3000/searchMovie/${userInput}/`,
+                        type: 'GET',
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data, textStatus, xhr) {
+                            if(data == []) {
+                                $("#searchResult").html("");
+                            } else {
+                                $(".options").remove();
+                                data.forEach((data) => {
+                                    var appendSearchResultsHTML = `<option class="options" value="${data.title}"></option>`;
+                                    $("#searchResult").append(appendSearchResultsHTML);
+                                }); // end of foreach
+                            }
+                        }, // end of success
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log('Error in Operation');  
+                            alert(xhr.responseJSON.Message);
+                        }
+                    }); // end of ajax
+                }; // end of if-else
+            }); // end of search event handler
+        }); // end of document ready
+
+        function myFunction() {
+            var datalistsValues = document.getElementById("search").value;
+            var options = document.getElementById('searchResult').childNodes;
+            for (var j = 0; j < options.length; j++) {
+                if (options[j].value === datalistsValues) {
+                    $("#search").attr("value",options[j].value);
+                }
+            }
+        }
+
+    </script>
+</body>

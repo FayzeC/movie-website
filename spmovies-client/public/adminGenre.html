@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>SPMovies: Admin Genre</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawsom-all.min.css">
+        <link rel="stylesheet" href="assets/css/slicknav.css">
+        <link rel="stylesheet" href="assets/css/themify-icons.css">
+        <link rel="stylesheet" href="assets/css/home.css">
+        <link rel="stylesheet" href="assets/css/register.css" />
+
+    </head>
+
+    <body>
+        <header>
+            <!-- Header Start -->
+           <div class="header-area header-transparent">
+                <div class="main-header">
+                   <div class="header-bottom  header-sticky">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <!-- Logo -->
+                                <div class="col-xl-2 col-lg-2 col-md-1">
+                                    <div class="logo">
+                                      <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-8">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu f-right d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">      
+                                                <li id="adminDashboard"></li>                                                                                                                               
+                                                <li><a href="Home.html">Home</a></li>
+                                                <li><a href="#">Genres</a>
+                                                    <ul class="submenu" id="genres">
+                                                    </ul>
+                                                </li>
+                                                <li><a href="#">Movies</a>
+                                                    <ul class="submenu" id="movies">
+                                                    </ul>
+                                                </li>
+                                                <li class="login" id="loginlogout">
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+           </div>
+            <!-- Header End -->
+        </header>
+
+        <div>
+            <!-- REQUIRED NOT WORKING-->
+            <form method="">
+                <h4 class="text-dark text-center pt-5">Add a new genre</h4>
+                <label>
+                    <input type="text" class="input" name="genre" placeholder="GENRE NAME" id="genre" required />
+                    <div class="line-box">
+                        <div class="line"></div>
+                    </div>
+                </label>
+
+                <label>
+                    <input type="text" class="input" name="description" placeholder="DESCRIPTION" id="description" required />
+                    <div class="line-box">
+                        <div class="line"></div>
+                    </div>
+                </label>
+
+                <button type="submit" id="submitGenre">Add</button>
+            </form>
+        </div>
+
+    </body>
+
+    <!-- JS here -->
+    <script src="assets/js/modernizr-3.5.0.min.js"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.slicknav.min.js"></script>
+    
+    <!-- Calling js file that contains ajax functions -->
+    <script src="assets/js/ajax/ajax.js"></script>
+    <script>headerAjaxCall()</script>
+    <script src="assets/js/mobile.js"></script>
+
+    <script>
+        // Only allow admin to view this page
+        // Other users(public/members) will be redirected to login.html
+        checkAdmin();
+        
+        $(document).ready(function () {  
+            
+            console.log("Ready triggered");
+
+            $("#submitGenre").click(function () {
+                console.log("Insert new genre triggered");
+                // get all form value
+                var genreName = $("#genre").val();
+                var genreDescription = $("#description").val();
+
+                var dataArr = [];
+                dataArr.push(genreName, genreDescription);
+                var validation = validateEmptyStr(dataArr);
+   
+                if (validation) {
+                    var token= localStorage.getItem('token');
+                    var data = "{\"genre\":\""+genreName+"\", \"description\":\""+genreDescription+"\"}";
+
+                    // insert genre to database
+                    $.ajax({
+                        url: 'http://localhost:3000/genre',
+                        type: 'POST',
+                        headers: {"Authorization": "Bearer " + token},
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",  
+                        success: function (data, textStatus, xhr) {  
+                            console.log("Success!");
+                            alert("New genre added!");
+                            window.location.assign("http://localhost:3001/adminDashboard.html");
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log('Error in Operation');  
+                            alert(xhr.responseJSON.Message);
+                        }
+                    }); // end of ajax
+                }
+                return false;
+            }); // end of submit genre event handler
+        }); // end of document ready
+    </script>
+
+</html>

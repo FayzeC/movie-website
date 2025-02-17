@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>SPMovies: Review</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawsom-all.min.css">
+        <link rel="stylesheet" href="assets/css/slicknav.css">
+        <link rel="stylesheet" href="assets/css/themify-icons.css">
+        <link rel="stylesheet" href="assets/css/home.css">
+        <link rel="stylesheet" href="assets/css/register.css" />
+
+    </head>
+
+    <body>
+        <header>
+            <!-- Header Start -->
+           <div class="header-area header-transparent">
+                <div class="main-header">
+                   <div class="header-bottom  header-sticky">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <!-- Logo -->
+                                <div class="col-xl-2 col-lg-2 col-md-1">
+                                    <div class="logo">
+                                      <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-8">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu f-right d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">   
+                                                <li id="adminDashboard"></li>                                                                                                                                  
+                                                <li><a href="Home.html">Home</a></li>
+                                                <li><a href="#">Genres</a>
+                                                    <ul class="submenu" id="genres">
+                                                    </ul>
+                                                </li>
+                                                <li><a href="#">Movies</a>
+                                                    <ul class="submenu" id="movies">
+                                                    </ul>
+                                                </li>
+                                                <li class="login" id="loginlogout">
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+           </div>
+            <!-- Header End -->
+        </header>
+
+        <form>
+            <h4 class="text-dark text-center pt-5" id="formTitle"></h4>
+            <label>
+                <input type="text" class="input" name="review" placeholder="Review" id="review" required />
+                <div class="line-box">
+                    <div class="line"></div>
+                </div>
+            </label>
+
+            <label>
+                <p>Rating:</p>
+                <div class="rating">
+                    <i class="fa fa-star" aria-hidden = "true" id = "st1"></i>
+                    <i class="fa fa-star" aria-hidden = "true" id = "st2"></i>
+                    <i class="fa fa-star" aria-hidden = "true" id = "st3"></i>
+                    <i class="fa fa-star" aria-hidden = "true" id = "st4"></i>
+                    <i class="fa fa-star" aria-hidden = "true" id = "st5"></i>
+                </div>
+            </label>
+
+            <button type="button" id="submitReview">Submit</button>
+        </form>
+    </body>
+
+    <!-- JS here -->
+    <script src="assets/js/modernizr-3.5.0.min.js"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="assets/js/jquery.slicknav.min.js"></script>
+    
+    <!-- Calling js file that contains ajax functions -->
+    <script src="assets/js/ajax/ajax.js"></script>
+    <script>headerAjaxCall()</script>
+    <script src="assets/js/mobile.js"></script>
+
+    <script>
+        // Only allow customer(registered members) to view this page
+        // Other users(public/admin) will be redirected to login.html
+        checkCustomer();
+
+        $(document).ready(function() {
+            console.log("Ready triggered");
+
+            // display movie title in form title
+            var movieID = localStorage.getItem('movieID');
+            var userID = localStorage.getItem('userID')
+            $.ajax({
+                url: `http://localhost:3000/movie/${movieID}/`,
+                type: 'GET',
+                dataType: "json",
+                success: function(data, textStatus,xhr) {
+                    $("#formTitle").append(`Your review for ${data[0].title}`);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Error in Operation');
+                    alert(xhr.responseJSON.Message);
+                } // end of error function
+            });
+
+            // to get user's rating input based on the stars clicked
+            $("#st1").click(function() {
+                $(".fa-star").css("color", "grey");
+                $("#st1").css("color", "gold");
+                localStorage.setItem('rating',1);
+            });
+
+            $("#st2").click(function() {
+                $(".fa-star").css("color", "grey");
+                $("#st1, #st2").css("color", "gold");
+                localStorage.setItem('rating',2);
+            });
+
+            $("#st3").click(function() {
+                $(".fa-star").css("color", "grey")
+                $("#st1, #st2, #st3").css("color", "gold");
+                localStorage.setItem('rating',3);
+            });
+
+            $("#st4").click(function() {
+                $(".fa-star").css("color", "grey");
+                $("#st1, #st2, #st3, #st4").css("color", "gold");
+                localStorage.setItem('rating',4);
+            });
+
+            $("#st5").click(function() {
+                $(".fa-star").css("color", "grey");
+                $("#st1, #st2, #st3, #st4, #st5").css("color", "gold");
+                localStorage.setItem('rating',5);
+            });
+
+            // submit review event handler
+            $("#submitReview").click(function() {
+                console.log("Submit review triggered");
+
+                var userRating = localStorage.getItem('rating');
+
+                // validation for 0 star
+                if (userRating == null) {
+                    var userRating = 0;
+                };
+
+                // insert user review
+                var review = $('#review').val();
+
+                // validation for empty form
+                var dataArr = [];
+                dataArr.push(review);
+                var validation = validateEmptyStr(dataArr);
+
+                if (validation) {
+                    var data = "{\"userid\":\""+ parseInt(userID)+"\", \"rating\":\""+userRating+"\", \"review\":\""+review+"\"}";
+                    var token = localStorage.getItem('token');
+                    $.ajax({
+                        url: `http://localhost:3000/movie/${movieID}/review`,
+                        type: 'POST', 
+                        headers: {"Authorization": "Bearer " + token},
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",  
+                        success: function (data, textStatus, xhr) {  
+                            if (data != null) {
+                                console.log("Success");
+                                alert("Review added!");
+                                window.location.assign("http://localhost:3001/movieDetails.html");
+                                return false;
+                            } else {
+                                console.log("Error")
+                            }
+                        },  
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log('Error in Operation');
+                            alert(xhr.responseJSON.Message);
+                        }
+                    }); // end of ajax
+                }
+            }); // end of submitReview
+        }); // end of document ready
+    </script>
+</html>

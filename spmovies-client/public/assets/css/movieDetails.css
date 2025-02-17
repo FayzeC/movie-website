@@ -1,0 +1,33 @@
+body {
+    background-color: #152238;
+}
+
+#moviePoster img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 270px;
+    height: 440px;
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 7%;
+}
+
+h2{
+    color: #e53637;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+#movieDetails ul > li {
+    margin-bottom: 5px;
+}
+
+.checked {
+    color: orange;
+}
+
+.notChecked {
+    color: white;
+}

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>SP Movies: Update Profile</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/fontawsom-all.min.css">
+    <link rel="stylesheet" href="assets/css/slicknav.css">
+    <link rel="stylesheet" href="assets/css/themify-icons.css">
+    <link rel="stylesheet" href="assets/css/updateProfile.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+    
+</head>
+
+<body>
+    <header>
+        <!-- Header Start -->
+       <div class="header-area header-transparent">
+            <div class="main-header">
+               <div class="header-bottom  header-sticky">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <!-- Logo -->
+                            <div class="col-xl-2 col-lg-2 col-md-1">
+                                <div class="logo">
+                                  <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-lg-10 col-md-8">
+                                <!-- Main-menu -->
+                                <div class="main-menu f-right d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">        
+                                            <li id="adminDashboard"></li>                                                                                                                             
+                                            <li><a href="Home.html">Home</a></li>
+                                            <li><a href="#">Genres</a>
+                                                <ul class="submenu" id="genres">
+                                                </ul>
+                                            </li>
+                                            <li><a href="#">Movies</a>
+                                                <ul class="submenu" id="movies">
+                                                </ul>
+                                            </li>
+                                            <li class="login" id="loginlogout">
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+       </div>
+        <!-- Header End -->
+    </header>
+
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="wrapper">
+                        <div class="row no-gutters">
+                            <div class="col-lg-8 col-md-7 order-md-last d-flex align-items-stretch">
+                                <div class="contact-wrap w-100 p-md-5 p-4">
+                                    <h3 class="mb-4">Update Profile</h3>
+                                    <div id="form-message-warning" class="mb-4"></div>
+                                    <div id="form-message-success" class="mb-4">
+                                        Your message was sent, thank you!
+                                    </div>
+                                    <form id="contactForm" name="contactForm" class="contactForm">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="label" for="username">Username</label>
+                                                    <input type="text" class="form-control" name="username"
+                                                        id="username" placeholder="Username">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="label" for="email">Email Address</label>
+                                                    <input type="email" class="form-control" name="email" id="email"
+                                                        placeholder="Email">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="label" for="contact">Contact</label>
+                                                    <input type="tel" class="form-control" name="contact" id="contact"
+                                                        placeholder="Contact Number">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="label" for="password">Password</label>
+                                                    <input type="password" class="form-control" name="password"
+                                                        id="password" placeholder="Password">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <button class="btn btn-danger btn-round" id="Update">Update</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-5 d-flex align-items-stretch">
+                                <div class="info-wrap bg-primary w-100 p-md-5 p-4">
+                                    <div class="profile-image"><img
+                                            src="http://localhost:3000/moviePoster/defaultProfile.jpg"
+                                            class="mx-auto d-block" alt="profile picture" /></div>
+                                    <figcaption id="profile">
+                                    </figcaption>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JS here -->
+    <script src="assets/js/modernizr-3.5.0.min.js"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="assets/js/jquery.slicknav.min.js"></script>
+    
+    <!-- Calling js file that contains ajax functions -->
+    <script src="assets/js/ajax/ajax.js"></script>
+    <script>headerAjaxCall()</script>
+    <script src="assets/js/mobile.js"></script>
+    <script>
+        // redirects public that are not looged in to login page
+        var token = localStorage.getItem('token');
+        if (token == null) {
+            alert("Please sign in or sign up to update profile");
+            window.location.assign("http://localhost:3001/login.html");
+        };
+
+        $(document).ready(function () {
+            console.log("Ready triggered");
+
+            var userID = localStorage.getItem('userID');
+            var token= localStorage.getItem('token');
+            var data = "{\"userid\":\"" + userID + "\"}";
+
+            // ajax to get user data
+            $.ajax({
+                url: `http://localhost:3000/users/${userID}/`,
+                type: 'GET',
+                data: data,
+                headers: {"Authorization": "Bearer " + token},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data, textStatus, xhr) {
+                    console.log("Get user success!");
+                    if (data != null) {
+                        var profileDataHTML = `<h3 class="text-center pt-3" >${data[0].username}</h3><p class="text-center">E-mail: ${data[0].email}<br>Contact: ${data[0].contact}</p>`
+                        $("#profile").append(profileDataHTML);
+                    } else {
+                        console.log("Error");
+                    };
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Error in Operation');
+                    alert(xhr.responseJSON.Message);
+                } // end of error function
+            }); // end of ajax 
+
+            // handle update profile
+            $("#Update").click(function () { 
+                console.log("Update was clicked");
+                // retrieve form values
+                var username = $('#username').val();
+                var contact = $('#contact').val();
+                var email = $('#email').val();
+                var password = $('#password').val();
+                
+                var storageType = localStorage.getItem("type");
+                if (storageType == "Admin") {
+                    var type = "Admin";
+                } else {
+                    var type = "Customer";
+                }
+                var profile_pic_url = `htts://www.default.com/${username}.jpg`;
+
+                // validation for empty form
+                var dataArr = [];
+                dataArr.push(username,contact,email,password,type);
+                var validation = validateEmptyStr(dataArr);
+
+                if(validation) {
+                    var token= localStorage.getItem('token');
+                    // format login data into a JSON object
+                    var data = "{\"username\":\"" + username + "\", \"email\":\"" + email + "\", \"contact\":\"" + contact + "\", \"password\":\"" + password + "\", \"type\":\"" + type + "\", \"profile_pic_url\":\"" + profile_pic_url + "\",\"userid\":\"" + userID + "\"}";
+                    // ajax to update user profile
+                    $.ajax({
+                        url: `http://localhost:3000/users/${userID}/`,
+                        type: 'PUT',
+                        headers: {"Authorization": "Bearer " + token},
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data, textStatus, xhr) {
+                            console.log("Success!");
+                            if (data == undefined) {
+                                window.location.assign("http://localhost:3001/profile.html");
+                            } else {
+                                console.log("Error");
+                            };
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log('Error in Operation');
+                            alert(xhr.responseJSON.Message)
+                        }
+                    }); // end of ajax for update
+                }
+                return false;
+            }); // end of update event handler
+        }); // end of document ready
+    </script>
+
+</body>
+
+</html>

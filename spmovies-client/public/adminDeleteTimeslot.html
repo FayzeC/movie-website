@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>SPMovies: Admin Delete Timeslot</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawsom-all.min.css">
+        <link rel="stylesheet" href="assets/css/slicknav.css">
+        <link rel="stylesheet" href="assets/css/themify-icons.css">
+        <link rel="stylesheet" href="assets/css/home.css">
+        <link rel="stylesheet" href="assets/css/register.css">
+
+    </head>
+
+    <body>
+        <header>
+            <!-- Header Start -->
+           <div class="header-area header-transparent">
+                <div class="main-header">
+                   <div class="header-bottom  header-sticky">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <!-- Logo -->
+                                <div class="col-xl-2 col-lg-2 col-md-1">
+                                    <div class="logo">
+                                      <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-8">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu f-right d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">    
+                                                <li id="adminDashboard"></li>                                                                                                                                 
+                                                <li><a href="Home.html">Home</a></li>
+                                                <li><a href="#">Genres</a>
+                                                    <ul class="submenu" id="genres">
+                                                    </ul>
+                                                </li>
+                                                <li><a href="#">Movies</a>
+                                                    <ul class="submenu" id="movies">
+                                                    </ul>
+                                                </li>
+                                                <li class="login" id="loginlogout">
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+           </div>
+            <!-- Header End -->
+        </header>
+
+        <section style="z-index: 9;margin-top: 150px;"></section>
+            <form id="deleteTimeslotForm" style="margin-top: 4%;">
+                <h4 class="text-dark pt-5">Delete timeslot</h4>
+                <label for="titles">Choose a movie title: 
+                    <select name="titles" id="titles" onchange="appendTimeslotOptions()">
+                        <option value="">- Choose a movie -</option>
+                    </select>
+                </label>
+
+                <label for="screening_timeslot">Choose a screening timeslot: 
+                    <select name="screening_timeslot" id="screening_timeslot">
+
+                    </select>
+                </label>
+
+                <button type="submit" onclick="deleteTimeslot()">Delete</button>
+            </form>
+        </section>
+    </body>
+
+   <!-- JS here -->
+    <script src="assets/js/modernizr-3.5.0.min.js"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="assets/js/jquery.slicknav.min.js"></script>
+    
+    <!-- Calling js file that contains ajax functions -->
+    <script src="assets/js/ajax/ajax.js"></script>
+    <script>headerAjaxCall()</script>
+    <script src="assets/js/mobile.js"></script>
+
+    <script>
+        // Only allow admin to view this page
+        // Other users(public/members) will be redirected to login.html
+        checkAdmin();
+        
+        appendMovieDatalistOptions();
+
+        // function to delete timeslot when submit button is clicked
+        function deleteTimeslot() {
+            $("#deleteTimeslotForm").submit(function(e) {
+                e.preventDefault();
+                var token= localStorage.getItem('token');
+                // get all form values
+                var movieTitle = $('#titles').val();
+                var deleteChosenTimeslot = $('#screening_timeslot').val();
+                var data2 = "{\"screening_timeslot\":\""+deleteChosenTimeslot+"\"}";
+
+                if (movieTitle == "" || deleteChosenTimeslot == null) {
+                    alert("Make sure all input is filled!");
+                }else {
+                    // get movie id from movie title and delete timeslot based on movie id
+                    $.ajax({
+                        url: `http://localhost:3000/movie/`,
+                        type: 'GET',
+                        success: function(data, textStatus, xhr) {
+                            data.forEach((data) => {
+                                if (data.title == movieTitle) {
+                                    var movieID = data.movieid;
+                                    $.ajax({
+                                        url: `http://localhost:3000/timeslot/${movieID}`,
+                                        type: 'DELETE',                                  
+                                        headers: {"Authorization": "Bearer " + token},
+                                        data: data2,
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json", 
+                                        success: function(data, textStatus, xhr) {
+                                            console.log("Success");
+                                            alert("Timeslot deleted!");
+                                            window.location.assign("http://localhost:3001/adminDashboard.html");
+                                        },
+                                        error: function(xhr, textStatus, errorThrown) {
+                                            console.log('Error in Operation');  
+                                            alert(xhr.responseJSON.Message);
+                                        } // end of error
+                                    }); // end of ajax
+                                }; // end of if    
+                            }); // end of foreach
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log('Error in Operation');  
+                            alert(xhr.responseJSON.Message);
+                        } // end of error
+                    }); // end of ajax
+                }
+                
+            });
+        }
+        
+        // function to append existing timeslots based on the movie title chosen by user
+        function appendTimeslotOptions() {
+            var movieTitle = $('#titles').val();
+            $(".timeslotOptions").remove();
+            $.ajax({
+                url: `http://localhost:3000/movie/`,
+                type: 'GET',
+                success: function(data, textStatus, xhr) {
+                    data.forEach((data) => {
+                        if (data.title == movieTitle) {
+                            var movieID = data.movieid;
+                            $.ajax({
+                                url: `http://localhost:3000/timeslot/${movieID}`,
+                                type: 'GET',
+                                success: function(data, textStatus, xhr) {
+                                    if (data == false) {
+                                        alert("This movie does not have any timeslots yet!")
+                                    } else {
+                                        data.forEach((data) => {
+                                            var appendTimeslotOptionsHTML = `<option value="${data.timeslot}" class="timeslotOptions">${data.timeslot}</option>`;
+                                            $("#screening_timeslot").append(appendTimeslotOptionsHTML);
+                                        }); // end of foreach
+                                    }
+                                },
+                                error: function(xhr, textStatus, errorThrown) {
+                                    console.log('Error in Operation');  
+                                    alert(xhr.responseJSON.Message);
+                                } // end of error
+                            }); // end of ajax
+                        }; // end of if    
+                    }); // end of foreach
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.log('Error in Operation'); 
+                    alert(xhr.responseJSON.Message);
+                } // end of error
+            }); // end of ajax
+        }; // end of appendTimeslotsOption function
+
+        
+    </script>
+
+</html>

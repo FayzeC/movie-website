@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SPMovies: Login</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/fontawsom-all.min.css">
+    <link rel="stylesheet" href="assets/css/slicknav.css">
+    <link rel="stylesheet" href="assets/css/themify-icons.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    
+</head>
+
+<body>
+    <header>
+        <!-- Header Start -->
+       <div class="header-area header-transparent">
+            <div class="main-header">
+               <div class="header-bottom  header-sticky">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <!-- Logo -->
+                            <div class="col-xl-2 col-lg-2 col-md-1">
+                                <div class="logo">
+                                  <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-lg-10 col-md-8">
+                                <!-- Main-menu -->
+                                <div class="main-menu f-right d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">     
+                                            <li id="adminDashboard"></li>                                                                                                                                
+                                            <li><a href="Home.html">Home</a></li>
+                                            <li><a href="#">Genres</a>
+                                                <ul class="submenu" id="genres">
+                                                </ul>
+                                            </li>
+                                            <li><a href="#">Movies</a>
+                                                <ul class="submenu" id="movies">
+                                                </ul>
+                                            </li>
+                                            <li class="login" id="loginlogout">
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+       </div>
+        <!-- Header End -->
+    </header>
+
+    <div class="container-fluid " id="loginForm">
+        <div class="container ">
+            <div class="row cdvfdfd">
+                <div class="col-lg-10 col-md-12 login-box">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 log-det">
+                            <div class="small-logo">
+                                <img src="./assets/img/sp_logo.png" alt="Singapore Polytechnic Logo">
+                            </div>
+                            <p class="dfmn"> Welcome to SP Movies! </p>
+                            
+                            <div class="text-box-cont">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" id="username" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                                </div>
+                                 <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i class="fas fa-lock"></i></span>
+                                    </div>
+                                    <input type="password" class="form-control"  id="password" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+                                    <div id="ErrorLogin"></div>
+                                </div>
+                                
+                                <div class="input-group center">
+                                    <button class="btn btn-danger btn-round" id="Login">SIGN IN</button>
+                                </div> 
+
+                                 <div class="row">
+                                    <p class="small-info">Connect With Social Media</p>
+                                </div>   
+                            </div>
+                            
+                            
+                            
+                            <div class="row">
+                                <ul>
+                                    <li><i class="fab fa-facebook-f"></i></li>
+                                    <li><i class="fab fa-twitter"></i></li>
+                                    <li><i class="fab fa-linkedin-in"></i></li>
+                                </ul>
+                            </div>
+                           
+
+
+                        </div>
+                        <div class="col-lg-6 col-md-6 box-de">
+                           <div class="inn-cover">
+                               <div class="ditk-inf">
+                                   <div class="small-logo">
+                            </div>
+                                    <h2 class="w-100">Don't Have an Account? </h2>
+                                    <p>Sign up now to enjoy 20% off !</p>
+                                    <a href="register.html">
+                                    <button type="button" class="btn btn-outline-light" id="SignUp">SIGN UP</button>
+                                    </a>
+                                </div>
+                                 <div class="foter-credit">
+                                  <a href="https://smarteyeapps.com/">Designed by : Smarteyeapps.com</a>  
+                               </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- JS here -->
+<!-- Jquery, Popper, Bootstrap -->
+<script src="assets/js/jquery-3.2.1.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- Jquery Mobile Menu -->
+<script src="assets/js/jquery.slicknav.min.js"></script>
+
+<!-- Calling js file that contains ajax functions -->
+<script src="assets/js/ajax/ajax.js"></script>
+<script>headerAjaxCall()</script>
+<script src="assets/js/mobile.js"></script>
+
+<script>
+    $(document).ready(function () {  
+        console.log("Ready triggered");
+        var type = localStorage.getItem('type');
+        // redirect logged in members to home.html
+        var token = localStorage.getItem('token');
+        if (token != null) {
+            alert(`You are logged in as ${type}. Please logout before signing in.`);
+            window.location.assign("http://localhost:3001/home.html");
+        };
+
+        // handle user login
+        var counter = 0;
+        $("#Login").click(function () {  
+            console.log("Login was clicked");
+            // retrieving login information from input tags
+            var username=$('#username').val();
+            var password=$('#password').val();
+            // format login data into a JSON object
+            var data = "{\"username\":\""+username+"\", \"password\":\""+password+"\"}";
+
+            $.ajax({                                                               
+                url: 'http://localhost:3000/login/' ,  
+                type: 'POST', 
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",  
+                success: function (data, textStatus, xhr) {  
+                    console.log("Success!");
+                    if (data != null){                    
+                        localStorage.setItem('token',data.token);
+                        localStorage.setItem('userID',data.userData.userid);
+                        localStorage.setItem('type',data.userData.type);
+                        window.location.assign("http://localhost:3001/home.html");
+                    } else {
+                        console.log("Error");
+                    }; // end of if-else                                                               
+                },  
+                error: function (xhr, textStatus, errorThrown) {  
+                    console.log('Error in Operation');  
+                    // show error if wrong password or username
+                    if(errorThrown == "Unauthorized") {
+                        if(counter <= 0 ) {
+                            var errorLoginHTML = `<p class="text-danger">You have entered an invalid username or password</p>`;
+                            counter ++;
+                            $("#ErrorLogin").append(errorLoginHTML);
+                        };
+                    };
+                    alert(xhr.responseJSON.Message)
+                }  
+            });  // end of ajax
+        return false; // prevents reloading of the page
+        }); // end of login event handle
+    }); // end of document ready
+
+</script>
+
+
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>SPMovies: Admin Edit Movie</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawsom-all.min.css">
+        <link rel="stylesheet" href="assets/css/slicknav.css">
+        <link rel="stylesheet" href="assets/css/themify-icons.css">
+        <link rel="stylesheet" href="assets/css/home.css">
+        <link rel="stylesheet" href="assets/css/register.css">
+
+    </head>
+
+    <body>
+        <header>
+            <!-- Header Start -->
+           <div class="header-area header-transparent">
+                <div class="main-header">
+                   <div class="header-bottom  header-sticky">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <!-- Logo -->
+                                <div class="col-xl-2 col-lg-2 col-md-1">
+                                    <div class="logo">
+                                      <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-8">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu f-right d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">    
+                                                <li id="adminDashboard"></li>                                                                                                                                 
+                                                <li><a href="Home.html">Home</a></li>
+                                                <li><a href="#">Genres</a>
+                                                    <ul class="submenu" id="genres">
+                                                    </ul>
+                                                </li>
+                                                <li><a href="#">Movies</a>
+                                                    <ul class="submenu" id="movies">
+                                                    </ul>
+                                                </li>
+                                                <li class="login" id="loginlogout">
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+           </div>
+            <!-- Header End -->
+        </header>
+
+        <section style="z-index: 9;margin-top: 150px;"></section>
+            <form id="editMovieForm" style="margin-top: 4%;">
+                <h4 class="text-dark pt-5">Edit a movie</h4>
+                <label for="titles">Choose a movie title to edit: 
+                    <select name="titles" id="titles" onchange="appendEditMovieForm()">
+                        <option value="">- Choose a movie -</option>
+                    </select>
+                </label>
+            </form>
+        </section>
+    </body>
+
+    <!-- JS here -->
+    <script src="assets/js/modernizr-3.5.0.min.js"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="assets/js/jquery.slicknav.min.js"></script>
+    
+    <!-- Calling js file that contains ajax functions -->
+    <script src="assets/js/ajax/ajax.js"></script>
+    <script>headerAjaxCall()</script>
+    <script src="assets/js/mobile.js"></script>
+    
+
+    <script>
+        // Only allow admin to view this page
+        // Other users(public/members) will be redirected to login.html
+        checkAdmin();
+        
+        appendMovieDatalistOptions();
+        // function to append checked box based on the movie's genre
+        function appendGenreCheckedBox(movieData) {
+            // split existing genre into array
+            var existingGenreArr = movieData.genres.split(",");
+
+            // ajax to get all existing genres and compare it with the movie's genres 
+            // boxes are checked if the movie's genres matches with existing ones
+            $.ajax({
+                url: `http://localhost:3000/genre` ,
+                type: 'GET',
+                success: function (data, textStatus, xhr) {
+                    if (data != null) {
+                        var allGenreNameArr = [];
+                        data.forEach((data) => {
+                            allGenreNameArr.push(data.genre);
+                        }); // end of foreach
+
+                        for (var i = 0; i < existingGenreArr.length; i++) {
+                            var index = allGenreNameArr.indexOf(existingGenreArr[i]);
+                            if (index > -1) {
+                                var displayGenreCheckboxHTML = `<div>
+                                                                <input type="checkbox" id="${existingGenreArr[i]}" name="movieDetails" value="${existingGenreArr[i]}" checked="checked">
+                                                                <label for="${existingGenreArr[i]}">${existingGenreArr[i]}</label>
+                                                            </div>`
+                                $(".genre_checkbox").append(displayGenreCheckboxHTML);
+                                allGenreNameArr.splice(index,1);
+                            }
+                        }
+
+                        for (var j = 0; j < allGenreNameArr.length; j++) {
+                            var displayGenreCheckboxHTML = `<div>
+                                                                <input type="checkbox" id="${allGenreNameArr[j]}" name="movieDetails" value="${allGenreNameArr[j]}">
+                                                                <label for="${allGenreNameArr[j]}">${allGenreNameArr[j]}</label>
+                                                            </div>`
+                            $(".genre_checkbox").append(displayGenreCheckboxHTML);
+                        }
+
+                    } else {
+                        console.log("Error");
+                    };
+                }, 
+                error: function(xhr, textStatus, errorThrown) {
+                    console.log('Error in Operation');  
+                    alert(xhr.responseText);
+                }
+            }); // end of ajax for get all genre
+        }; // end of appendGenreCheckedBox function
+
+        // function to append the movie form with existing details based on movie title chosen
+        function appendEditMovieForm() {
+            var movieTitle = $('#titles').val();
+
+            // remove any existing forms 
+            $(".movieForm").remove();
+            $(".genre_checkbox").remove();
+
+            // ajax to get existing movie details to append to form
+            $.ajax({
+                url: `http://localhost:3000/movie/`,
+                type: 'GET',
+                success: function(data, textStatus, xhr) {
+                    data.forEach((data) => {
+                        if (data.title == movieTitle) {
+                            var movieID = data.movieid;
+                            $.ajax({
+                                url: `http://localhost:3000/movie/${movieID}`,
+                                type: 'GET',
+                                success: function(data, textStatus, xhr) {
+                                    if (data != null) {
+                                        data.forEach((data) => {
+                                            var timeStr = data.time
+                                            var duration = timeStr.split(" ");
+                                            var time = parseInt(duration[0]);
+                                            var date = data.opening_date;
+                                            var newDate = new Date(date);
+                                            var formattedDate = newDate.toISOString().slice(0,10);
+                                            var appendEditMovieFormHTML = `<label class="movieForm">
+                                                                                <input type="text" class="input" name="movieTitle" id="movieTitle" value="${data.title}" required />
+                                                                                <div class="line-box">
+                                                                                    <div class="line"></div>
+                                                                                </div>
+                                                                            </label>
+
+                                                                            <div class="cast_textarea">
+                                                                                <label for="cast" class="movieForm"> Cast List(separated by comma):</label>
+                                                                                    <textarea id="cast" name="cast" rows="6" class="movieForm" required>${data.cast}</textarea>                    
+                                                                            </div>
+
+                                                                            <div class="duration_box">
+                                                                                <label for="duration" class="movieForm"> Duration:
+                                                                                    <input type="number"  name="duration"  id="duration" class="movieForm" value="${time}" min="1" required /> mins
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="date_box" >
+                                                                                <label for="openingDate" class="movieForm"> Opening Date:
+                                                                                    <input type="date" name="openingDate" id="openingDate" class="movieForm" value="${formattedDate}" required />
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="sypnosis_textarea">
+                                                                                <label for="movieDescription" class="movieForm"> Sypnosis:</label>
+                                                                                    <textarea id="movieDescription" name="movieDescription" rows="6" class="movieForm" required>${data.description}</textarea>                    
+                                                                            </div>
+                                                                            <div class="genre_checkbox">
+                                                                                <p>Genres:</p> 
+                                                                            </div>
+                                                                            <div class="movie_poster">
+                                                                                <label for="moviePoster" class="movieForm"> Movie Poster:</label>
+                                                                                <input type="file" class="input movieForm" name="moviePoster" id="moviePoster" accept="image/jpeg"/>
+                                                                            </div>
+                                                                            <button type="submit" id="submitEditMovie" class="movieForm" onclick="editMovie(${movieID})">Update</button>`;
+                                            $("#editMovieForm").append(appendEditMovieFormHTML);
+                                            appendGenreCheckedBox(data);
+                                            
+                                        }); // end of foreach
+                                    } else {
+                                        console.log("Error");
+                                    }
+                                },
+                                error: function(xhr, textStatus, errorThrown) {
+                                    console.log('Error in Operation');  
+                                    alert(xhr.responseJSON.Message);
+                                } // end of error
+                            }); // end of ajax
+                        }; // end of if    
+                    }); // end of foreach
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.log('Error in Operation');  
+                    alert(xhr.responseJSON.Message);
+                } // end of error
+            }); // end of ajax
+        }; // end of appendEditMovieForm function
+
+        // function that handles submit 
+        function editMovie(movieID) {
+            $("#editMovieForm").submit(function(e) {
+                e.preventDefault();
+                // gets all form value
+                var movieTitle = $("#movieTitle").val();
+                var cast = $("#cast").val();
+                var time = $("#duration").val();
+                // formatting
+                var duration = time.concat(" mins");
+                var openingDate = $("#openingDate").val();
+                var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+                var newDate = new Date(openingDate);
+                var formattedDate = newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear();
+
+                var movieDescription = $("#movieDescription").val();
+                var genreValues = [];
+                $('input[name=movieDetails]:checked').map(function() {
+                    genreValues.push($(this).val());
+                });
+
+                // console.log(genreValues);
+                // get genre id based on genre name chosen by admin
+                var genreIDArr = [];
+                genreValues.forEach((genreName) => {
+                    $.ajax({
+                        url: `http://localhost:3000/genre/${genreName}/`,
+                        type: 'GET',
+                        async: false,
+                        success: function(data, textStatus, xhr) {
+                            genreIDArr.push(data[0].genreid);
+                            var genreIDStr = genreIDArr.join();
+                            localStorage.setItem('genreIDStr',genreIDStr);
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log('Error in Operation');  
+                            alert(xhr.responseJSON.Message);
+                        } // end of error
+                    }); // end of ajax
+                }); // end of foreach
+
+                // edit movie 
+                var token= localStorage.getItem('token');
+                var genreString = localStorage.getItem('genreIDStr');
+                var data = "{\"title\":\""+movieTitle+"\", \"description\":\""+movieDescription+"\", \"cast\":\""+cast+"\", \"time\":\""+duration+"\", \"opening_date\":\""+formattedDate+"\", \"genreid\":\""+genreString+"\"}";
+                $.ajax({
+                    url: `http://localhost:3000/movie/${movieID}`,
+                    type: 'PUT',
+                    data: data,
+                    headers: {"Authorization": "Bearer " + token},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",  
+                    async: false,
+                    success: function (data, textStatus, xhr) {
+                        console.log("Update movie success");
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error in Operation');  
+                        alert(xhr.responseJSON.Message);
+                    } // end of error
+                }); // end of ajax
+
+                // update movie poster
+                var moviePoster = document.getElementById("moviePoster");
+                if (moviePoster.files.length != 0) {                        
+                    var fd = new FormData();
+                    fd.append('moviePoster', moviePoster.files[0]);
+
+                    $.ajax({
+                        url: `http://localhost:3000/update/${movieID}/poster/`,
+                        type: 'PUT',
+                        headers: {"Authorization": "Bearer " + token},
+                        data: fd,
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function(data, textStatus, xhr) {
+                            console.log("Poster added");
+                            localStorage.removeItem("genreIDStr");
+                            window.location.assign("http://localhost:3001/adminDashboard.html");
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log('Error in Operation');  
+                            alert(xhr.responseJSON.Message);
+                        } // end of error
+                    }); // end of ajax
+                }else {
+                    // alert("Movie updated!");
+                    localStorage.removeItem("genreIDStr");
+                    window.location.assign("http://localhost:3001/adminDashboard.html");
+                }
+            }); // end of edit movie submit
+        }; // end of edit movie function
+
+    </script>

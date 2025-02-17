@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+    <html lang="en">
+    
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <title>SPMovies: Admin Sign Up</title>
+            <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+            <link rel="stylesheet" href="assets/css/fontawsom-all.min.css">
+            <link rel="stylesheet" href="assets/css/slicknav.css">
+            <link rel="stylesheet" href="assets/css/themify-icons.css">
+            <link rel="stylesheet" href="assets/css/home.css">
+            <link rel="stylesheet" href="assets/css/register.css" />
+    
+        </head>
+    
+        <body>
+            <header>
+                <!-- Header Start -->
+               <div class="header-area header-transparent">
+                    <div class="main-header">
+                       <div class="header-bottom  header-sticky">
+                            <div class="container-fluid">
+                                <div class="row align-items-center">
+                                    <!-- Logo -->
+                                    <div class="col-xl-2 col-lg-2 col-md-1">
+                                        <div class="logo">
+                                          <a href="home.html"><img src="assets/img/sp_white_logo.png" class="w-75 h-50 "alt=""></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-10 col-lg-10 col-md-8">
+                                        <!-- Main-menu -->
+                                        <div class="main-menu f-right d-none d-lg-block">
+                                            <nav>
+                                                <ul id="navigation">   
+                                                    <li id="adminDashboard"></li>                                                                                                                                  
+                                                    <li><a href="Home.html">Home</a></li>
+                                                    <li><a href="#">Genres</a>
+                                                        <ul class="submenu" id="genres">
+                                                        </ul>
+                                                    </li>
+                                                    <li><a href="#">Movies</a>
+                                                        <ul class="submenu" id="movies">
+                                                        </ul>
+                                                    </li>
+                                                    <li class="login" id="loginlogout">
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <!-- Mobile Menu -->
+                                    <div class="col-12">
+                                        <div class="mobile_menu d-block d-lg-none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                    </div>
+               </div>
+                <!-- Header End -->
+            </header>
+    
+            <div>
+                <form method="POST">
+                    <h4 class="text-dark text-center pt-5">Admin Sign Up</h4>
+                    <label>
+                        <input type="text" class="input" name="username" placeholder="USERNAME" id="username" required />
+                        <div class="line-box">
+                            <div class="line"></div>
+                        </div>
+                    </label>
+    
+                    <label>
+                        <input type="email" class="input" name="email" placeholder="EMAIL" id="email" required />
+                        <div class="line-box">
+                            <div class="line"></div>
+                        </div>
+                    </label>
+    
+                    <label>
+                        <input type="tel" class="input" name="contact" placeholder="CONTACT" id="contact" required />
+                        <div class="line-box">
+                            <div class="line"></div>
+                        </div>
+                    </label>
+    
+                    <label>
+                        <input type="password" class="input" name="confirm" placeholder="CONFIRM PASSWORD" id="password" required />
+                        <div class="line-box">
+                            <div class="line"></div>
+                        </div>
+                    </label>
+    
+                    <button type="submit" id="SignUp">Submit</button>
+                </form>
+            </div>
+        </body>
+    
+        <!-- JS here -->
+        <script src="assets/js/modernizr-3.5.0.min.js"></script>
+        <!-- Jquery, Popper, Bootstrap -->
+        <script src="assets/js/jquery-3.2.1.min.js"></script>
+        <script src="assets/js/popper.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+
+        <script src="assets/js/jquery.slicknav.min.js"></script>
+    
+        <script src="assets/js/ajax/ajax.js"></script>
+        <script>headerAjaxCall()</script>
+        <script src="assets/js/mobile.js"></script>
+        
+        <script>
+            checkAdmin();
+
+            $(document).ready(function () {  
+                console.log("Ready triggered");
+    
+                // handle user sign up
+                $("#SignUp").click(function () {  
+                    console.log("Sign up was clicked");
+                    // retrieving login information from input tags
+                    var username=$('#username').val();
+                    var contact=$('#contact').val();
+                    var email=$('#email').val();
+                    var password=$('#password').val();
+                    var type = "Admin";
+                    var profile_pic_url = `htts://www.default.com/${username}.jpg`;
+    
+                    // validation for empty form
+                    var dataArr = [];
+                    dataArr.push(username,contact,email,password,type);
+                    var validation = validateEmptyStr(dataArr);
+    
+                    if (validation) {
+                        // format login data into a JSON object
+                        var data = "{\"username\":\""+username+"\", \"email\":\""+email+"\", \"contact\":\""+contact+"\", \"password\":\""+password+"\", \"type\":\""+type+"\", \"profile_pic_url\":\""+profile_pic_url+"\"}";
+                        // ajax to create new user and login
+                        $.ajax({                                                               
+                                url: 'http://localhost:3000/users/' ,  
+                                type: 'POST', 
+                                data: data,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",  
+                                success: function (data, textStatus, xhr) {  
+                                    console.log("New admin added!"); 
+                                    alert(`New ${username} admin added!`)
+                                    window.location.assign("http://localhost:3001/adminDashboard.html");                                   
+                                },  
+                                error: function (xhr, textStatus, errorThrown) {  
+                                    console.log('Error in Operation');  
+                                    alert(xhr.responseJSON.Message); 
+                                } // end of error
+                        });  //end of ajax
+                    }
+                    return false; // prevents reloading of the page
+                });  // end of sign up event handle
+            }); // end of document ready
+        </script>
+    </html>
